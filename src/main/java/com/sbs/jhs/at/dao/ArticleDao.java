@@ -3,6 +3,7 @@ package com.sbs.jhs.at.dao;
 import java.util.List;
 
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
 
 import com.sbs.jhs.at.dto.Article;
 
@@ -10,5 +11,5 @@ import com.sbs.jhs.at.dto.Article;
 public interface ArticleDao {
 	public List<Article> getForPrintArticles();
 
-	public Article getForPrintArticle(long id);
+	public Article getForPrintArticleById(@Param("id") int id);
 }

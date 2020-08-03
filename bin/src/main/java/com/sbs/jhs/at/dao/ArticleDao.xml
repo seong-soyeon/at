@@ -10,7 +10,7 @@
 		ORDER BY id DESC
 	</select>
 	
-	<select id="getForPrintArticleById" resultType="Article">
+	<select id="getForPrintArticle" parameterType="long" resultType="Article">
 		SELECT *
 		FROM article
 		WHERE id = #{id}
