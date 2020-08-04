@@ -4,6 +4,19 @@
 <c:set var="pageTitle" value="게시물 리스트" />
 <%@ include file="../part/head.jspf" %>
 
+
+<div class="search con flex">
+	<div>전체 게시물 개수 : ${totalCount}</div>
+	<div class="search-box">
+		<form action="list">
+			<input type="hidden" name="page" value="1" /> 
+			<input type="hidden" name="searchKeywordType" value="title" /> 
+			<input type="text" name="searchKeyword" value="${param.searchKeyword}" />
+			<button type="submit">검색</button>
+		</form>
+	</div>
+</div>
+
 <div class="table-box con">
 	<table>
 		<colgroup>
@@ -27,6 +40,9 @@
 			</c:forEach>	
 		</tbody>
 	</table>
+	<div class="con btnbtn">
+		<button type="button" onclick="location.href='write' ">글쓰기</button>
+	</div>
 </div>
 
 <%@ include file="../part/foot.jspf" %>

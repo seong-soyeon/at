@@ -44,6 +44,10 @@ label[for] {
 	text-align: left;
 }
 
+.flex {
+    display: flex;
+}
+
 /* 커스텀 */
 .con {
 	max-width: 1200px;
@@ -55,3 +59,36 @@ label[for] {
 	text-align: center;
 	color: gray;
 } 
+/* write & modify */
+.form1> .form-row input, .form1> .form-row textarea {
+	display: block;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 10px;
+}
+.form1> .form-row textarea {
+	min-height: 300px;
+	resize: none;
+}
+.form1> .form-row{
+	margin: 0 15px;
+	margin-top: 15px;
+}
+.form1> .form-row> .flex> input {
+	margin: 0 20px;
+}
+/* list */
+.btnbtn {
+	text-align: right;
+	margin: 10px;
+}
+.btnbtn> button {
+	height: 40px;
+}
+.search {
+	justify-content: space-between;
+}
+.search> .search-box {
+	text-align: end;
+	margin-bottom: 10px;
+}

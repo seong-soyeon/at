@@ -1,5 +1,6 @@
-package com.sbs.jhs.at.controller;//https://gist.github.com/jhs512/cd164d0acdf1d9b50936454d25e6146d/revisions
-
+package com.sbs.jhs.at.controller;
+//https://gist.github.com/jhs512/cd164d0acdf1d9b50936454d25e6146d/revisions
+//게시물 리스팅, 검색, 페이징, 이전글,다음글
 import java.util.List;
 import java.util.Map;
 
@@ -21,8 +22,10 @@ public class ArticleController {
 	@RequestMapping("/article/list")
 	public String showList(Model model) {
 		List<Article> articles = articleService.getForPrintArticles();
+		int totalCount = articleService.getTotalCount();
 		
 		model.addAttribute("articles", articles);
+		model.addAttribute("totalCount", totalCount);
 		
 		return "article/list";
 	}
@@ -38,14 +41,41 @@ public class ArticleController {
 	}
 
 	@RequestMapping("/article/write")
-	public String showWrite() {
+	public String showWrite(Model model) {
 		return "article/write";
 	}
 
 	@RequestMapping("/article/doWrite")
 	@ResponseBody
-	public String doWrite() {
+	public String doWrite(@RequestParam Map<String, Object> param) {
+		int newId = articleService.write(param);
 		
-		return "article/write";
+		return "html:<script> alert('" + newId + "번 게시물이 생성되었습니다.'); location.replace('list'); </script>";
+	}
+
+	@RequestMapping("/article/modify")
+	public String showModify(Model model, int id) {
+		Article article = articleService.getForPrintArticleById(id);
+
+		model.addAttribute("article", article);
+		
+		return "article/modify";
+	}
+	
+	@RequestMapping("/article/doModify")
+	@ResponseBody
+	public String doModify(@RequestParam Map<String, Object> param) {
+		int id = Integer.parseInt((String)param.get("id"));
+		articleService.modify(param);
+		
+		return "html:<script> alert('" + id + "번 게시물이 수정되었습니다.'); location.replace('list'); </script>";
+	}
+	
+	@RequestMapping("/article/doDelete")
+	@ResponseBody
+	public String doDelete(Model model, int id) {
+		articleService.delete(id);
+
+		return "html:<script> alert('" + id + "번 게시물이 삭제되었습니다.'); location.replace('list'); </script>";
 	}
 }

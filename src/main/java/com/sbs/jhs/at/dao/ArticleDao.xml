@@ -15,4 +15,33 @@
 		FROM article
 		WHERE id = #{id}
 	</select>
+	
+	<insert id="write" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO article
+		SET regDate = NOW(),
+		updateDate = NOW(),
+		displayStatus = 1,
+		title = #{title},
+		body = #{body}
+	</insert>
+	
+	<update id="modify"  parameterType="Map">
+		UPDATE article
+		SET title = #{title},
+		body = #{body}
+		WHERE id = #{id}
+	</update>
+	
+	<update id="delete" parameterType="int">
+		UPDATE article
+		SET delStatus = 1,
+		delDate = NOW(),
+		displayStatus = 0
+		WHERE id = #{id}
+	</update>
+	
+	<select id="getTotalCount" parameterType="map" resultType="int">
+		SELECT COUNT(*)
+		FROM article
+	</select>
 </mapper>
