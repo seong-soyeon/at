@@ -39,6 +39,14 @@ public class ArticleService {
 	public int getTotalCount() {
 		return articleDao.getTotalCount();
 	}
+
+	public Integer getForPrevArticle(int id) {
+		return articleDao.getForPrevArticle(id);
+	}
+
+	public Integer getForNextArticle(int id) {
+		return articleDao.getForNextArticle(id);
+	}
 }
 
 

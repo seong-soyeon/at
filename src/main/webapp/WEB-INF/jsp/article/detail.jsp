@@ -25,26 +25,29 @@
 			</tr>
 		</tbody>
 	</table>
-	<div class="move-btn">
-		<a class="move-btn1" href="#">< 이전글</a>
-		<a class="move-btn1" href="#">다음글 ></a>
+	<div class="move-btn"><!-- eq = (==), ne = (!=), empty = list,map등의 객체가 값이 있다,없다를 구분(ex)empty, !empty)-->
+		<c:choose>
+			<c:when test="${prevId != 0 }">
+				<a class="move-btn1" href="detail?id=${prevId}">< 이전글</a>
+			</c:when>
+			<c:otherwise>
+				이전 게시글이 없습니다.
+		   </c:otherwise>
+		</c:choose>
+		<c:choose>
+			<c:when test="${nextId != totalCount}">
+				<a class="move-btn1" href="detail?id=${nextId}">다음글 ></a>
+			</c:when>
+			<c:otherwise>
+				다음 게시글이 없습니다.
+		   </c:otherwise>
+		</c:choose>
 	</div>
 	<div class="con btnbtn">
 		<button type="button" onclick="location.href='list'">뒤로가기</button>
 		<button type="button" onclick="location.href='write'">게시물 추가</button>
 		<button type="button" onclick="location.href='modify?id=${article.id}'">게시물 수정</button>
-		<button type="button" onclick="if ( confirm('삭제하시겠습니까?') == false ) return false; 	location.href='./doDelete?id=${article.id}	'">게시물 삭제</button>
+		<button type="button" onclick="if ( confirm('삭제하시겠습니까?') == false ) return false; location.href='./doDelete?id=${article.id}	'">게시물 삭제</button>
 	</div>
 </div>
-<style>
-.body {
-	height: 200px;
-}
-.move-btn {
-	text-align: center;
-}
-.move-btn> .move-btn1 {
-	margin: 10px;
-}
-</style>
 <%@ include file="../part/foot.jspf" %>

@@ -20,7 +20,7 @@
 		<div class="form-row">
 			<div class="flex">
 				<input type="submit" value="작성">
-				<input type="reset"	value="취소" onclick="history.back();">
+				<input type="reset"	value="취소" onclick="if ( confirm('취소하시겠습니까?(리스트로 이동합니다.)') == false ) return false; 	location.href='list'">
 			</div>
 		</div>	
 	</form>

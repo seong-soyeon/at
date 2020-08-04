@@ -92,3 +92,17 @@ label[for] {
 	text-align: end;
 	margin-bottom: 10px;
 }
+
+/* detail */
+.detail-box {
+	margin: 30px;
+}
+.body {
+	height: 200px;
+}
+.move-btn {
+	text-align: center;
+}
+.move-btn> .move-btn1 {
+	padding: 10px;
+}

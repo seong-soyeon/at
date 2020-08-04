@@ -1,6 +1,6 @@
 package com.sbs.jhs.at.controller;
 //https://gist.github.com/jhs512/cd164d0acdf1d9b50936454d25e6146d/revisions
-//게시물 리스팅, 검색, 페이징, 이전글,다음글
+//게시물 리스팅, 검색52분, 페이징
 import java.util.List;
 import java.util.Map;
 
@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.jhs.at.dto.Article;
 import com.sbs.jhs.at.service.ArticleService;
+import com.sbs.jhs.at.util.Util;
 
 @Controller
 public class ArticleController {
@@ -20,9 +21,29 @@ public class ArticleController {
 	private ArticleService articleService;
 	
 	@RequestMapping("/article/list")
-	public String showList(Model model) {
-		List<Article> articles = articleService.getForPrintArticles();
+	public String showList(Model model, @RequestParam Map<String, Object> param) {
+		int page = 1;
+		if (param.get("page") != null) {
+			page = Integer.parseInt((String) param.get("page"));
+		}
+		String searchKeywordType = "";
+		if (param.get("searchKeywordType") != null ) {
+			searchKeywordType = (String)param.get("searchKeywordType"); 
+		}
+		String searchKeyword = "";
+		if (param.get("searchKeyword") != null ) {
+			searchKeyword = (String) param.get("searchKeyword");
+		}
+		
 		int totalCount = articleService.getTotalCount();
+		
+		
+		int articlecount = 10;
+		int limitFrom = (page - 1) * articlecount;
+		int totalPage = (int) Math.ceil(totalCount / (double) articlecount);
+
+
+		List<Article> articles = articleService.getForPrintArticles();
 		
 		model.addAttribute("articles", articles);
 		model.addAttribute("totalCount", totalCount);
@@ -35,6 +56,13 @@ public class ArticleController {
 		int id = Integer.parseInt((String)param.get("id"));
 		Article article = articleService.getForPrintArticleById(id);
 
+		int totalCount = articleService.getTotalCount();
+		int prevId = id-1;
+		int nextId = id+1;
+		int lastId = totalCount;
+		model.addAttribute("prevId", prevId);
+		model.addAttribute("nextId", nextId);
+		model.addAttribute("lastId", lastId);
 		model.addAttribute("article", article);
 		
 		return "article/detail";

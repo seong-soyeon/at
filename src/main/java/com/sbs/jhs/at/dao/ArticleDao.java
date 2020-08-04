@@ -22,5 +22,9 @@ public interface ArticleDao {
 	public int delete(int id);
 
 	public int getTotalCount();
+
+	public Integer getForPrevArticle(int id);
+
+	public Integer getForNextArticle(int id);
 }
 	

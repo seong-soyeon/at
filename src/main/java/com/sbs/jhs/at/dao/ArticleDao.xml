@@ -44,4 +44,26 @@
 		SELECT COUNT(*)
 		FROM article
 	</select>
+	
+	<select id="getForPrevArticle" resultType="Integer">
+		<![CDATA[
+		SELECT id
+		FROM article
+		WHERE id < #{id}
+		AND displayStatus = 1
+		ORDER BY id DESC
+		LIMIT 1
+		]]>
+	</select>
+	
+	<select id="getForNextArticle" resultType="Integer">
+		<![CDATA[
+		SELECT id
+		FROM article
+		WHERE id > #{id}
+		AND displayStatus = 1
+		ORDER BY id DESC
+		LIMIT 1
+		]]>
+	</select>
 </mapper>
