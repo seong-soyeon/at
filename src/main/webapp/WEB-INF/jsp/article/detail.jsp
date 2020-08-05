@@ -56,7 +56,7 @@
 <form action="doWriteReply" method="POST" class="con form1" onsubmit="ArticleWriteForm__submit(this); return false;">
 	<input type="hidden" name="articleId" value="${article.id}">
 	<input type="hidden" name="redirectUrl" value="${requestUriQueryString}">
-	<div class="con table-box replytable-box">
+	<div class="table-box replytable-box">
 		<table>
 			<colgroup>
 				<col width="10%">
@@ -80,18 +80,6 @@
 </form>
 
 <h2 class="con">댓글 리스트</h2>
-
-<div class="search con flex">
-	<div>전체 게시물 개수 : ${totalCount}</div>
-	<div class="search-box">
-		<form action="list">
-			<input type="hidden" name="page" value="1" /> 
-			<input type="hidden" name="searchKeywordType" value="title" /> 
-			<input type="text" name="searchKeyword" value="${param.searchKeyword}" />
-			<button type="submit">검색</button>
-		</form>
-	</div>
-</div>
 
 <div class="table-box con">
 	<table>

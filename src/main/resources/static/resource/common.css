@@ -51,6 +51,7 @@ label[for] {
 /* 커스텀 */
 .con {
 	max-width: 1200px;
+	padding: 15px;
 }
 
 .page-title-box {
@@ -71,7 +72,6 @@ label[for] {
 	resize: none;
 }
 .form1> .form-row{
-	margin: 0 15px;
 	margin-top: 15px;
 }
 .form1> .form-row> .flex> input {
@@ -94,9 +94,6 @@ label[for] {
 }
 
 /* detail */
-.detail-box {
-	margin: 30px;
-}
 .body {
 	height: 200px;
 }
