@@ -66,4 +66,12 @@
 		LIMIT 1
 		]]>
 	</select>
+	
+	<insert id="writeReply" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
+		INSERT INTO articleReply
+		SET regDate = NOW(),
+		updateDate = NOW(),
+		body = #{body},
+		articleId = #{articleId}
+	</insert>
 </mapper>

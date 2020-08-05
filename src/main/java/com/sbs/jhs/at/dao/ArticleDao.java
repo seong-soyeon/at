@@ -5,7 +5,6 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sbs.jhs.at.dto.Article;
 
@@ -26,5 +25,7 @@ public interface ArticleDao {
 	public Integer getForPrevArticle(int id);
 
 	public Integer getForNextArticle(int id);
+
+	public void writeReply(Map<String, Object> param);
 }
 	

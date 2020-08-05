@@ -15,6 +15,16 @@ CREATE TABLE article (
     `body` LONGTEXT NOT NULL
 );
 
+# 댓글 테이블 생성
+DROP TABLE IF EXISTS articleReply;
+CREATE TABLE articleReply (
+    id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
+    regDate DATETIME NOT NULL,
+    updateDate DATETIME NOT NULL,
+    articleId INT(10) UNSIGNED NOT NULL,
+    `body` TEXT NOT NULL
+);
+
 # article 테이블에 테스트 데이터 삽입
 INSERT INTO article
 SET regDate = NOW(),
@@ -36,6 +46,12 @@ updateDate = NOW(),
 title = '제목3',
 `body` = '내용3',
 displayStatus = 1;
+
+INSERT INTO articleReply
+SET regDate = NOW(),
+updateDate = NOW(),
+articleId = 1,
+`body` = '댓글댓글';
 
 SELECT *
 FROM article; 

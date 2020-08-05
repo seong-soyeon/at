@@ -43,6 +43,16 @@
 	<div class="con btnbtn">
 		<button type="button" onclick="location.href='write' ">글쓰기</button>
 	</div>
-</div>
+</div><a href="?searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=${i}" class="block">${i}</a>
 
+	<div class="con page-box">
+		<ul class="flex flex-jc-c">
+			<c:forEach var="i" begin="1" end="${totalPage}" step="1">
+				<!-- 삼항연산자 i == paramPage 가 참이면 "current"  거짓이면 ""  -->
+				<li class="${i == cPage ? 'current' : ''}">
+					<a href="?searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=${i}" class="block">${i}</a>
+				</li>
+			</c:forEach>
+		</ul>
+	</div>
 <%@ include file="../part/foot.jspf" %>

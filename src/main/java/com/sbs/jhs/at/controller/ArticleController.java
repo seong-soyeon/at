@@ -36,17 +36,18 @@ public class ArticleController {
 		}
 		
 		int totalCount = articleService.getTotalCount();
-		
-		
-		int articlecount = 10;
-		int limitFrom = (page - 1) * articlecount;
-		int totalPage = (int) Math.ceil(totalCount / (double) articlecount);
+		// 한페이지당 아티클 수		
+		int itemsInAPage = 5;
+		int limitFrom = (page - 1) * itemsInAPage;
+		int totalPage = (int) Math.ceil(totalCount / (double) itemsInAPage);
 
 
 		List<Article> articles = articleService.getForPrintArticles();
 		
 		model.addAttribute("articles", articles);
 		model.addAttribute("totalCount", totalCount);
+		model.addAttribute("searchKeywordType", searchKeywordType);
+		model.addAttribute("searchKeyword", searchKeyword);
 		
 		return "article/list";
 	}
@@ -105,5 +106,19 @@ public class ArticleController {
 		articleService.delete(id);
 
 		return "html:<script> alert('" + id + "번 게시물이 삭제되었습니다.'); location.replace('list'); </script>";
+	}
+	
+	@RequestMapping("/article/doWriteReply")
+	@ResponseBody
+	public String doWriteReply(Model model, @RequestParam Map<String, Object> param) {
+		Map<String, Object> rs = articleService.writeReply(param);
+		
+		String msg = (String) rs.get("msg");
+		String redirectUrl = (String) param.get("redirectUrl");
+
+		model.addAttribute("alertMsg", msg);
+		model.addAttribute("locationReplace", redirectUrl);
+
+		return "common/redirect";
 	}
 }

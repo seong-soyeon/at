@@ -50,4 +50,82 @@
 		<button type="button" onclick="if ( confirm('삭제하시겠습니까?') == false ) return false; location.href='./doDelete?id=${article.id}	'">게시물 삭제</button>
 	</div>
 </div>
+
+<h2 class="con">댓글작성</h2>
+
+<form action="doWriteReply" method="POST" class="con form1" onsubmit="ArticleWriteForm__submit(this); return false;">
+	<input type="hidden" name="articleId" value="${article.id}">
+	<input type="hidden" name="redirectUrl" value="${requestUriQueryString}">
+	<div class="con table-box replytable-box">
+		<table>
+			<colgroup>
+				<col width="10%">
+				<col width="80%">
+				<col width="10%">
+			</colgroup>
+			<tbody>
+				<tr>
+					<th> 내용 </th>
+					<td><textarea name="body" placeholder="댓글을 입력해 주세요" maxlength="1000"></textarea></td>
+					<td>
+						<input class="replybtn" type="submit" value="작성">
+						<input class="replybtn" type="reset"	value="취소" onclick="if ( confirm('취소하시겠습니까?(리스트로 이동합니다.)') == false ) return false; 	location.href='list'">
+					</td>
+				</tr>					
+				</tr>
+				
+			</tbody>
+		</table>
+	</div>
+</form>
+
+<h2 class="con">댓글 리스트</h2>
+
+<div class="search con flex">
+	<div>전체 게시물 개수 : ${totalCount}</div>
+	<div class="search-box">
+		<form action="list">
+			<input type="hidden" name="page" value="1" /> 
+			<input type="hidden" name="searchKeywordType" value="title" /> 
+			<input type="text" name="searchKeyword" value="${param.searchKeyword}" />
+			<button type="submit">검색</button>
+		</form>
+	</div>
+</div>
+
+<div class="table-box con">
+	<table>
+		<colgroup>
+			<col width="100" />
+			<col width="200" />
+		</colgroup>
+		<thead>
+			<tr>
+				<th>번호</th>
+				<th>날짜</th>
+				<th>내용</th>
+				<th>비고</th>
+			</tr>
+		</thead>
+		<tbody>
+			<c:forEach items="${articleReplies}" var="articleReply">
+				<tr>
+					<td>${articleReply.id}</td>
+					<td>${articleReply.regDate}</td>
+					<td>${articleReply.body}</td>
+					<td><a href="detail?id=${article.id}">${article.title}</a></td>
+				</tr>
+			</c:forEach>	
+		</tbody>
+	</table>
+	<div class="con btnbtn">
+		<button type="button" onclick="location.href='write' ">글쓰기</button>
+	</div>
+</div>
+
+
+
+
+
+
 <%@ include file="../part/foot.jspf" %>
