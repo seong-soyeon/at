@@ -74,4 +74,41 @@
 		body = #{body},
 		articleId = #{articleId}
 	</insert>
+	
+	<select id="getForPrintArticleReplies" resultMap="articleReply">
+		SELECT *
+		FROM articleReply
+		WHERE articleId = #{articleId}
+		ORDER BY id DESC
+
+	</select>
+
+	<update id="modifyArticleReply">
+		UPDATE articleReply
+		set body = #{body}
+		WHERE id = #{id}
+	</update>
+
+	<select id="getForPrintArticleReply" resultMap="articleReply">
+		SELECT AR.*
+		FROM articleReply AS AR
+		WHERE AR.id = #{id}
+	</select>
+
+	<delete id="deleteArticleReply">
+		DELETE
+		FROM articleReply
+		WHERE id = #{id}
+	</delete>
+	
+	<resultMap type="ArticleReply" id="articleReply">
+		<id property="id" column="id" />
+		<id property="regDate" column="regDate" />
+		<id property="body" column="body" />
+		<id property="articleId" column="articleId" />
+		<association property="extra" javaType="map">
+			<id property="writer" column="extra__writer" />
+		</association>
+	</resultMap>
+	
 </mapper>

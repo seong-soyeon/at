@@ -51,6 +51,7 @@ label[for] {
 /* 커스텀 */
 .con {
 	max-width: 1200px;
+	padding: 15px;
 }
 
 .page-title-box {
@@ -59,6 +60,14 @@ label[for] {
 	text-align: center;
 	color: gray;
 } 
+table> tbody> tr> td> textarea {
+	min-height: 100px;
+	resize: none;
+	width: 100%;
+	box-sizing: border-box;
+	padding: 10px;
+	
+}
 /* write & modify */
 .form1> .form-row input, .form1> .form-row textarea {
 	display: block;
@@ -71,7 +80,6 @@ label[for] {
 	resize: none;
 }
 .form1> .form-row{
-	margin: 0 15px;
 	margin-top: 15px;
 }
 .form1> .form-row> .flex> input {
@@ -94,9 +102,6 @@ label[for] {
 }
 
 /* detail */
-.detail-box {
-	margin: 30px;
-}
 .body {
 	height: 200px;
 }
@@ -105,4 +110,8 @@ label[for] {
 }
 .move-btn> .move-btn1 {
 	padding: 10px;
+}
+.form1> .replytable-box textarea {
+	min-height: 100px;
+	resize: none;
 }

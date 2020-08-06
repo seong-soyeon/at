@@ -55,3 +55,5 @@ articleId = 1,
 
 SELECT *
 FROM article; 
+SELECT *
+FROM articleReply; 

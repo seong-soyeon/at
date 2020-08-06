@@ -4,6 +4,8 @@ package com.sbs.jhs.at.controller;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -12,8 +14,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.jhs.at.dto.Article;
+import com.sbs.jhs.at.dto.ArticleReply;
 import com.sbs.jhs.at.service.ArticleService;
-import com.sbs.jhs.at.util.Util;
 
 @Controller
 public class ArticleController {
@@ -66,6 +68,10 @@ public class ArticleController {
 		model.addAttribute("lastId", lastId);
 		model.addAttribute("article", article);
 		
+		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(article.getId());
+
+		model.addAttribute("articleReplies", articleReplies);
+		
 		return "article/detail";
 	}
 
@@ -115,6 +121,44 @@ public class ArticleController {
 		
 		String msg = (String) rs.get("msg");
 		String redirectUrl = (String) param.get("redirectUrl");
+
+		model.addAttribute("alertMsg", msg);
+		model.addAttribute("locationReplace", redirectUrl);
+
+		return "common/redirect";
+	}
+
+	@RequestMapping("article/modifyReply")
+	public String showModifyReply(Model model, int id, HttpServletRequest request) {
+
+		ArticleReply articleReply = articleService.getForPrintArticleReply(id);
+
+		model.addAttribute("articleReply", articleReply);
+
+		return "article/modifyReply";
+	}
+
+	@RequestMapping("article/doModifyReply")
+	public String doModifyReply(Model model, @RequestParam Map<String, Object> param, HttpServletRequest request) {
+
+		int id = Integer.parseInt((String)param.get("id"));
+		Map<String, Object> rs = articleService.modifyReply(param);
+
+		String msg = (String) rs.get("msg");
+		String redirectUrl = (String) param.get("redirectUrl");
+
+		model.addAttribute("alertMsg", msg);
+		model.addAttribute("locationReplace", "detail?id=" + id + "");
+
+		return "common/redirect";
+	}
+
+	@RequestMapping("article/doDeleteReply")
+	public String doDeleteReply(Model model, int id, String redirectUrl, HttpServletRequest request) {
+
+		Map<String, Object> rs = articleService.deleteArticleReply(id);
+
+		String msg = (String) rs.get("msg");
 
 		model.addAttribute("alertMsg", msg);
 		model.addAttribute("locationReplace", redirectUrl);
