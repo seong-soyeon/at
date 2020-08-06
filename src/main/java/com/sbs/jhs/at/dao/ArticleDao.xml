@@ -32,7 +32,7 @@
 		WHERE id = #{id}
 	</update>
 	
-	<update id="delete" parameterType="int">
+	<update id="deleteArticle">
 		UPDATE article
 		SET delStatus = 1,
 		delDate = NOW(),
@@ -43,6 +43,7 @@
 	<select id="getTotalCount" parameterType="map" resultType="int">
 		SELECT COUNT(*)
 		FROM article
+		WHERE displayStatus = 1
 	</select>
 	
 	<select id="getForPrevArticle" resultType="Integer">
@@ -100,6 +101,12 @@
 		FROM articleReply
 		WHERE id = #{id}
 	</delete>
+	
+	<select id="getArticleReply" resultMap="articleReply">
+		SELECT AR.*
+		FROM articleReply AS AR
+		WHERE AR.id = #{id}
+	</select>
 	
 	<resultMap type="ArticleReply" id="articleReply">
 		<id property="id" column="id" />

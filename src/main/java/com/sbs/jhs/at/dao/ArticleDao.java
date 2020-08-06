@@ -19,7 +19,7 @@ public interface ArticleDao {
 
 	public int modify(Map<String, Object> param);
 
-	public int delete(int id);
+	public void deleteArticle(@Param("id") int id);
 
 	public int getTotalCount();
 
@@ -36,5 +36,7 @@ public interface ArticleDao {
 	public void modifyArticleReply(Map<String, Object> param);
 
 	public void deleteArticleReply(@Param("id") int id);
+
+	public ArticleReply getArticleReply(@Param("id") int id);
 }
 	

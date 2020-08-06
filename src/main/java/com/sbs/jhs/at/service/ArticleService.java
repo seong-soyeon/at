@@ -33,9 +33,14 @@ public class ArticleService {
 		return articleDao.modify(param);
 	}
 
-	public int delete(int id) {
-		int delid = articleDao.delete(id);
-		return delid;
+	public Map<String, Object> deleteArticle(int id) {
+		articleDao.deleteArticle(id);
+		Map<String, Object> rs = new HashMap<>();
+
+		rs.put("resultCode", "S-1");
+		rs.put("msg", String.format("%d번 게시물이 삭제되었습니다.", id));
+
+		return rs;
 	}
 
 	public int getTotalCount() {
@@ -71,8 +76,8 @@ public class ArticleService {
 	}
 
 	public Map<String, Object> modifyReply(Map<String, Object> param) {
-		articleDao.modifyArticleReply(param);
 		int id = Util.getAsInt(param.get("id"));
+		articleDao.modifyArticleReply(param);
 		Map<String, Object> rs = new HashMap<>();
 
 		rs.put("resultCode", "S-1");
@@ -90,6 +95,8 @@ public class ArticleService {
 
 		return rs;
 	}
-	
-	
+
+	public ArticleReply getArticleReply(int id) {
+		return articleDao.getArticleReply(id);
+	}
 }

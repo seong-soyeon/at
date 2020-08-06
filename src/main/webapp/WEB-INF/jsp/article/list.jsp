@@ -40,7 +40,7 @@
 			</c:forEach>	
 		</tbody>
 	</table>
-	<div class="con btnbtn">
+	<div class="btnbtn">
 		<button type="button" onclick="location.href='write' ">글쓰기</button>
 	</div>
 </div><a href="?searchKeywordType=${param.searchKeywordType}&searchKeyword=${param.searchKeyword}&page=${i}" class="block">${i}</a>

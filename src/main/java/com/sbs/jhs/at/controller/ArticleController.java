@@ -109,9 +109,16 @@ public class ArticleController {
 	@RequestMapping("/article/doDelete")
 	@ResponseBody
 	public String doDelete(Model model, int id) {
-		articleService.delete(id);
+		Map<String, Object> rs = articleService.deleteArticle(id);
 
-		return "html:<script> alert('" + id + "번 게시물이 삭제되었습니다.'); location.replace('list'); </script>";
+		String msg = (String)rs.get("msg");
+		String redirectUrl = "/article/list";
+
+		model.addAttribute("alertMsg", msg);
+		model.addAttribute("locationReplace", redirectUrl);
+		System.out.println(redirectUrl);
+
+		return "common/redirect";
 	}
 	
 	@RequestMapping("/article/doWriteReply")
@@ -140,28 +147,37 @@ public class ArticleController {
 
 	@RequestMapping("article/doModifyReply")
 	public String doModifyReply(Model model, @RequestParam Map<String, Object> param, HttpServletRequest request) {
-
 		int id = Integer.parseInt((String)param.get("id"));
 		Map<String, Object> rs = articleService.modifyReply(param);
 
 		String msg = (String) rs.get("msg");
 		String redirectUrl = (String) param.get("redirectUrl");
 
+		ArticleReply articleReply = getArticleReply(id);
+		int articleId = articleReply.getArticleId();
+		
 		model.addAttribute("alertMsg", msg);
-		model.addAttribute("locationReplace", "detail?id=" + id + "");
+		model.addAttribute("locationReplace", "detail?id=" + articleId + "");
 
 		return "common/redirect";
 	}
 
+	private ArticleReply getArticleReply(int id) {
+		return articleService.getArticleReply(id);
+	}
+
 	@RequestMapping("article/doDeleteReply")
 	public String doDeleteReply(Model model, int id, String redirectUrl, HttpServletRequest request) {
-
+		ArticleReply articleReply = getArticleReply(id);
+		int articleId = articleReply.getArticleId();
+		
 		Map<String, Object> rs = articleService.deleteArticleReply(id);
 
 		String msg = (String) rs.get("msg");
 
+		
 		model.addAttribute("alertMsg", msg);
-		model.addAttribute("locationReplace", redirectUrl);
+		model.addAttribute("locationReplace", "detail?id=" + articleId + "");
 
 		return "common/redirect";
 	}
