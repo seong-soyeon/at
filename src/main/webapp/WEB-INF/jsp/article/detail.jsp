@@ -53,9 +53,8 @@
 
 <div class="con">
 	<h2>댓글작성</h2>
-	<form action="doWriteReply" method="POST" class="form1" onsubmit="WriteReply__submitForm(this); return false;">
+	<form class="form1" onsubmit="WriteReply__submitForm(this); return false;">
 		<input type="hidden" name="articleId" value="${article.id}">
-		<input type="hidden" name="redirectUrl" value="${requestUriQueryString}">
 		<div class="table-box form-row replytable-box">
 			<table>
 				<colgroup>
@@ -122,18 +121,21 @@
 			form.body.focus();
 			return;
 		}
-		$.post('./doWriteReplyAjax', {
-			articleId : param.id,
-			body : form.body.value
-		}, function(data) {
+		$.post(
+			'./doWriteReplyAjax', {
+				articleId : param.id,
+				body : form.body.value
+			}, 
+			function(data) {
 				if (data.msg) {
 					alert(data.msg);
 				}
 				if ( data.resultCode.substr(0, 2) == 'S-' ) {
-					location.reload(); // 임시
+					location.reload(); // 임시 (F5키랑 같음)
 				}
-			}, 'json');
-			form.body.value = '';
-		}
-	</script>
+			}, 'json'
+		);
+		form.body.value = '';
+	}
+</script>
 <%@ include file="../part/foot.jspf" %>

@@ -26,17 +26,11 @@
 <!-- 공통 JS -->
 <script src="/resource/common.js"></script>
 
+<script>
+var param = ${paramJson};
+</script>
+
 </head>
-<style>
-.head-a {
-	text-align: center;
-}
-.head-a> a {
-	padding: 30px;
-	color: #dfdfdf;
-	font-size: 1.4rem;
-}
-</style>
 <body>
 	<div class="outer-box">
 		<h1 class="page-title-box con">${pageTitle}</h1> 

@@ -1,6 +1,6 @@
 package com.sbs.jhs.at.controller;
 //https://gist.github.com/jhs512/cd164d0acdf1d9b50936454d25e6146d/revisions
-//게시물 리스팅, 검색52분, 페이징
+//게시물 리스팅, 검색52분, 페이징//아젝스 댓글작성 오류남 url 문제인듯(interceptor>BdforeActionInteceptor 먼저!)
 import java.util.List;
 import java.util.Map;
 
@@ -124,15 +124,28 @@ public class ArticleController {
 	@RequestMapping("/article/doWriteReply")
 	@ResponseBody
 	public String doWriteReply(Model model, @RequestParam Map<String, Object> param) {
+		int id = Integer.parseInt((String)param.get("id"));//이거
 		Map<String, Object> rs = articleService.writeReply(param);
 		
 		String msg = (String) rs.get("msg");
 		String redirectUrl = (String) param.get("redirectUrl");
 
+		ArticleReply articleReply = getArticleReply(id);//이거
+		int articleId = articleReply.getArticleId();//이거
+		
 		model.addAttribute("alertMsg", msg);
-		model.addAttribute("locationReplace", redirectUrl);
+		model.addAttribute("locationReplace", "detail?id=" + articleId + "");//이거 필요없어지면 수정&삭제하기
 
 		return "common/redirect";
+	}
+	
+	@RequestMapping("/article/doWriteReplyAjax")
+	@ResponseBody
+	public Map<String, Object> doWriteReplyAjax(Model model, @RequestParam Map<String, Object> param) {
+		int id = Integer.parseInt((String)param.get("id"));//이거
+		Map<String, Object> rs = articleService.writeReply(param);
+		
+		return rs;
 	}
 
 	@RequestMapping("article/modifyReply")
