@@ -43,7 +43,6 @@ public class ArticleController {
 		int limitFrom = (page - 1) * itemsInAPage;
 		int totalPage = (int) Math.ceil(totalCount / (double) itemsInAPage);
 
-
 		List<Article> articles = articleService.getForPrintArticles();
 		
 		model.addAttribute("articles", articles);
@@ -134,15 +133,14 @@ public class ArticleController {
 		int articleId = articleReply.getArticleId();//이거
 		
 		model.addAttribute("alertMsg", msg);
-		model.addAttribute("locationReplace", "detail?id=" + articleId + "");//이거 필요없어지면 수정&삭제하기
+		model.addAttribute("locationReplace", "detail?id=' + articleId + '");//이거 필요없어지면 수정&삭제하기
 
 		return "common/redirect";
 	}
 	
 	@RequestMapping("/article/doWriteReplyAjax")
 	@ResponseBody
-	public Map<String, Object> doWriteReplyAjax(Model model, @RequestParam Map<String, Object> param) {
-		int id = Integer.parseInt((String)param.get("id"));//이거
+	public Map<String, Object> doWriteReplyAjax(Model model, @RequestParam Map<String, Object> param, HttpServletRequest  request ) {
 		Map<String, Object> rs = articleService.writeReply(param);
 		
 		return rs;

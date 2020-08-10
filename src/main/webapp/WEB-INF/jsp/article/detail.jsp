@@ -96,6 +96,7 @@
 				</tr>
 			</thead>
 			<tbody>
+			<%--
 				<c:forEach items="${articleReplies}" var="articleReply">
 					<tr>
 						<td>${articleReply.id}</td>
@@ -103,12 +104,13 @@
 						<td>${articleReply.body}</td>
 						<td>
 							<div class="btnbtn">
-								<button type="button" onclick="location.href='modifyReply?id=${articleReply.id}'">수정</button>
-								<button type="button" onclick="if ( confirm('삭제하시겠습니까?') == false ) return false; location.href='./doDeleteReply?id=${articleReply.id}'">삭제</button>
+								<button type="button" onclick="location.href='#'">수정</button>
+								<button type="button" onclick="if ( confirm('삭제하시겠습니까?') == false ) return false; location.href='#'">삭제</button>
 							</div>
 						</td>
 					</tr>
-				</c:forEach>	
+				</c:forEach>
+			 --%>	
 			</tbody>
 		</table>
 	</div>
