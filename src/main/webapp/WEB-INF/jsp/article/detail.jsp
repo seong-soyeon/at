@@ -53,8 +53,33 @@
 
 <div class="con">
 	<h2>댓글작성</h2>
-	<form class="form1" onsubmit="WriteReply__submitForm(this); return false;">
-		<input type="hidden" name="articleId" value="${article.id}">
+	
+	<script>
+		function ArticleReply__submitWriteForm(form) {
+			form.body.value = form.body.value.trim();
+			if (form.body.value.length == 0) {
+				alert('댓글을 입력해주세요.');
+				form.body.focus();
+				return;
+			}
+			$.post(
+				'./doWriteReplyAjax', {
+					articleId : param.id,
+					body : form.body.value
+				}, 
+				function(data) {
+					if (data.msg) {
+						alert(data.msg);
+					}
+					if ( data.resultCode.substr(0, 2) == 'S-' ) {
+						location.reload(); // 임시 (F5키랑 같음)
+					}
+				}, 'json'
+			);
+			form.body.value = '';
+		}
+	</script>
+	<form class="form1" onsubmit="ArticleReply__submitWriteForm(this); return false;">
 		<div class="table-box form-row replytable-box">
 			<table>
 				<colgroup>
@@ -68,7 +93,7 @@
 						<td><textarea name="body" placeholder="댓글을 입력해 주세요" maxlength="1000"></textarea></td>
 						<td>
 							<input class="replybtn" type="submit" value="작성">
-							<input class="replybtn" type="reset" value="취소" onclick="if ( confirm('취소하시겠습니까?(리스트로 이동합니다.)') == false ) return false; 	location.href='list'">
+							<input class="replybtn" type="reset" value="취소" onclick="if ( confirm('취소하시겠습니까?(리스트로 이동합니다.)') == false ) return false; location.href='list'">
 						</td>
 					</tr>	
 				</tbody>
@@ -79,7 +104,51 @@
 
 <div class="con">
 	<h2 class="con">댓글 리스트</h2>
-	<div class="table-box">
+	
+	<script>
+		function ArticleReply__loadList() {
+			$.get('./getForPrintArticleRepliesRs', {
+				id : param.id
+			}, function(data) {
+				for(var i = 0; i < data.articleReplies.length; i++) {
+					var articleReply = data.articleReplies[i];
+					ArticleReply__drawReply(articleReply);
+				}
+			}, 'json');
+		}
+
+		//댓글이 들어올 때 마다 prepend로 아래와 같은 html넣음
+		var ArticleReply__$listTbody;
+
+		function ArticleReply__drawReply(articleReply) {
+			var html = '';
+
+			html = '<tr data-article-reply-id="' + articleReply.id + '">'; 
+			html += '<td>' + articleReply.id + '</td>';
+			html += '<td>' + articleReply.regDate + '</td>';
+			html += '<td>' + articleReply.body + '</td>';
+			html += '<td>';
+			html += '<div>';
+			html += '<a href="#">삭제</a>';
+			html += '<a href="#">수정</a>';
+			//html += '<button type="button" onclick="location.href='#'">수정</button>';
+			//html += '<button type="button" onclick="if ( confirm('삭제하시겠습니까?') == false ) return false; location.href='#'">삭제</button>';
+			html += '</div>';
+			html += '</td>';
+			html += '</tr>';
+
+			ArticleReply__$listTbody.prepend(html);
+		}
+	
+		//이 기능은 html도 다 읽어온 후 실행
+		$(function() {
+			ArticleReply__$listTbody = $('.article-reply-list-box > table tbody');
+			
+			AticleRaply__loadList();
+		});
+	</script>
+
+	<div class="table-box article-reply-list-box">
 		<table>
 			<colgroup>
 				<col width="100" />
@@ -115,29 +184,5 @@
 		</table>
 	</div>
 </div>
-<script>
-	function WriteReply__submitForm(form) {
-		form.body.value = form.body.value.trim();
-		if (form.body.value.length == 0) {
-			alert('댓글을 입력해주세요.');
-			form.body.focus();
-			return;
-		}
-		$.post(
-			'./doWriteReplyAjax', {
-				articleId : param.id,
-				body : form.body.value
-			}, 
-			function(data) {
-				if (data.msg) {
-					alert(data.msg);
-				}
-				if ( data.resultCode.substr(0, 2) == 'S-' ) {
-					location.reload(); // 임시 (F5키랑 같음)
-				}
-			}, 'json'
-		);
-		form.body.value = '';
-	}
-</script>
+
 <%@ include file="../part/foot.jspf" %>

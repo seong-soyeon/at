@@ -1,4 +1,5 @@
 package com.sbs.jhs.at.controller;
+import java.util.HashMap;
 //https://gist.github.com/jhs512/cd164d0acdf1d9b50936454d25e6146d/revisions
 //게시물 리스팅, 검색52분, 페이징//아젝스 댓글작성 오류남 url 문제인듯(interceptor>BdforeActionInteceptor 먼저!)
 import java.util.List;
@@ -136,6 +137,20 @@ public class ArticleController {
 		model.addAttribute("locationReplace", "detail?id=' + articleId + '");//이거 필요없어지면 수정&삭제하기
 
 		return "common/redirect";
+	}
+	
+	@RequestMapping("/article/getForPrintArticleRepliesRs")
+	@ResponseBody
+	public Map<String, Object> getForPrintArticleRepliesRs(int id) {
+		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(id);
+		
+
+		Map<String, Object> rs = new HashMap<>();
+		rs.put("resultCode", "S-1");
+		rs.put("msg", String.format("총 %d개의 댓글이 있습니다.", articleReplies.size()));
+		rs.put("articleReplies", articleReplies);
+		
+		return rs;
 	}
 	
 	@RequestMapping("/article/doWriteReplyAjax")
