@@ -3,7 +3,19 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="pageTitle" value="게시물 상세보기" />
 <%@ include file="../part/head.jspf" %>
-
+<style>
+.article-reply-list-box tr .loading-inline  {
+	display: none;
+	font-weight: bold;
+	color: red;
+}
+.article-reply-list-box tr[data-loading="Y"] .loading-none {
+	display: none;
+}
+.article-reply-list-box tr[data-loading="Y"] .loading-inline {
+	display: inline;
+}
+</style>
 <div class="table-box con detail-box">
 	<table>
 		<tbody>
@@ -154,8 +166,25 @@
 			ArticleReply__loadList();
 		});
 
+		//이 함수가 있는 버튼과 가장 가까운 tr(=댓글 한개)삭제
 		function ArticleReply__delete(obj) {
-			alert(obj);
+			var $clickedBtn = $(obj);
+			var $tr = $clickedBtn.closest('tr');
+
+			var replyId = parseInt($tr.attr('data-article-reply-id'));
+
+			$tr.attr('data-loading', 'Y');
+			
+			$.post(
+				'./doDeleteReplyAjax,'{
+					id: replyId
+				},
+				function(data){
+					$tr.remove();
+					$tr.attr('data-loading', 'N');
+				},
+				'json'
+			);
 		}
 	</script>
 
@@ -168,8 +197,9 @@
 					<td>{$내용}</td>
 					<td>
 						<div class="reply-btn">
-							<button type="button" onclick="location.href='#'">수정</button>
-							<button type="button" onclick="if ( confirm('삭제하시겠습니까?') ) {ArticleReply__delete(this);}">삭제</button>
+							<span class="loading-inline">삭제중입니다...</span>
+							<button class="loading-none" type="button" onclick="location.href='#'">수정</button>
+							<button class="loading-none"  type="button" onclick="if ( confirm('정말 삭제하시겠습니까?') ) {ArticleReply__delete(this); } return false; location.href='#'">삭제</button>
 						</div>
 					</td>
 				</tr>
@@ -194,7 +224,7 @@
 				</tr>
 			</thead>
 			<tbody>
-				<%-- <c:forEach items="${articleReplies}" var="articleReply">
+			<%-- <c:forEach items="${articleReplies}" var="articleReply">
 					<tr>
 						<td>${articleReply.id}</td>
 						<td>${articleReply.regDate}</td>
@@ -207,6 +237,7 @@
 						</td>
 					</tr>
 				</c:forEach> --%>
+			
 			</tbody>
 		</table>
 	</div>

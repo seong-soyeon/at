@@ -206,4 +206,18 @@ public class ArticleController {
 
 		return "common/redirect";
 	}
+	
+	@RequestMapping("article/doDeleteReplyAjax")
+	@ResponseBody
+	public Map<String, Object> doDeleteReply(int id, String redirectUrl, HttpServletRequest request) {
+		Map<String, Object> rs = articleService.deleteArticleReply(id);
+		
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		return rs;
+	}
 }
