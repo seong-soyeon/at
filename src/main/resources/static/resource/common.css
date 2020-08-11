@@ -53,12 +53,14 @@ label[for] {
 	max-width: 1200px;
 	padding: 15px;
 }
-
 .page-title-box {
 	margin-top:30px;
 	margin-bottom:30px;
 	text-align: center;
 	color: gray;
+}
+.template-box {
+	display: none;
 } 
 table> tbody> tr> td> textarea {
 	min-height: 100px;
@@ -67,6 +69,14 @@ table> tbody> tr> td> textarea {
 	box-sizing: border-box;
 	padding: 10px;
 	
+}
+.head-a {
+	text-align: center;
+}
+.head-a> a {
+	padding: 30px;
+	color: #dfdfdf;
+	font-size: 1.4rem;
 }
 /* write & modify */
 .form1> .form-row input, .form1> .form-row textarea {
@@ -93,6 +103,10 @@ table> tbody> tr> td> textarea {
 .btnbtn> button {
 	height: 40px;
 }
+.reply-btn> button {
+	height: 40px;
+	width: 100%;
+}
 .search {
 	justify-content: space-between;
 }
@@ -100,7 +114,6 @@ table> tbody> tr> td> textarea {
 	text-align: end;
 	margin-bottom: 10px;
 }
-
 /* detail */
 .body {
 	height: 200px;

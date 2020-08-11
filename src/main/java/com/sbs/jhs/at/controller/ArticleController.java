@@ -138,12 +138,11 @@ public class ArticleController {
 
 		return "common/redirect";
 	}
-	
+	//Rs = Map을 리턴 한다는뜻
 	@RequestMapping("/article/getForPrintArticleRepliesRs")
 	@ResponseBody
-	public Map<String, Object> getForPrintArticleRepliesRs(int id) {
-		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(id);
-		
+	public Map<String, Object> getForPrintArticleRepliesRs(int id, int from) {
+		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(id, from);
 
 		Map<String, Object> rs = new HashMap<>();
 		rs.put("resultCode", "S-1");

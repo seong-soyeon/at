@@ -52,7 +52,7 @@
 </div>
 
 <div class="con">
-	<h2>댓글작성</h2>
+	<h2 class="con">댓글작성</h2>
 	
 	<script>
 		function ArticleReply__submitWriteForm(form) {
@@ -68,12 +68,7 @@
 					body : form.body.value
 				}, 
 				function(data) {
-					if (data.msg) {
-						alert(data.msg);
-					}
-					if ( data.resultCode.substr(0, 2) == 'S-' ) {
-						location.reload(); // 임시 (F5키랑 같음)
-					}
+			
 				}, 'json'
 			);
 			form.body.value = '';
@@ -106,14 +101,22 @@
 	<h2 class="con">댓글 리스트</h2>
 	
 	<script>
+		var ArticleReply__lastLoadedArticleReplyId = 0;
 		function ArticleReply__loadList() {
 			$.get('./getForPrintArticleRepliesRs', {
-				id : param.id
+				id : param.id,
+				from : ArticleReply__lastLoadedArticleReplyId +1
 			}, function(data) {
-				for(var i = 0; i < data.articleReplies.length; i++) {
+				data.articleReplies = data.articleReplies.reverse();
+				
+				for (var i = 0; i < data.articleReplies.length; i++) {
 					var articleReply = data.articleReplies[i];
 					ArticleReply__drawReply(articleReply);
+
+					ArticleReply__lastLoadedArticleReplyId = articleReply.id;
 				}
+
+				setTimeout(ArticleReply__loadList, 1000);
 			}, 'json');
 		}
 
@@ -121,21 +124,25 @@
 		var ArticleReply__$listTbody;
 
 		function ArticleReply__drawReply(articleReply) {
-			var html = '';
+			var html = $('.template-box-1 tbody').html();
 
+			html = replaceAll(html, "{$번호}", articleReply.id);
+			html = replaceAll(html, "{$날짜}", articleReply.regDate);
+			html = replaceAll(html, "{$내용}", articleReply.body);
+				
+			/* 
+			var html = ''; 
 			html = '<tr data-article-reply-id="' + articleReply.id + '">'; 
 			html += '<td>' + articleReply.id + '</td>';
 			html += '<td>' + articleReply.regDate + '</td>';
 			html += '<td>' + articleReply.body + '</td>';
 			html += '<td>';
-			html += '<div>';
-			html += '<a href="#">삭제</a>';
-			html += '<a href="#">수정</a>';
+			html += '<a href="#" class="reply-btn">삭제</a>';
+			html += '<a href="#" class="reply-btn">수정</a>';
 			//html += '<button type="button" onclick="location.href='#'">수정</button>';
 			//html += '<button type="button" onclick="if ( confirm('삭제하시겠습니까?') == false ) return false; location.href='#'">삭제</button>';
-			html += '</div>';
 			html += '</td>';
-			html += '</tr>';
+			html += '</tr>'; */
 
 			ArticleReply__$listTbody.prepend(html);
 		}
@@ -143,18 +150,40 @@
 		//이 기능은 html도 다 읽어온 후 실행
 		$(function() {
 			ArticleReply__$listTbody = $('.article-reply-list-box > table tbody');
-			
-			AticleRaply__loadList();
+
+			ArticleReply__loadList();
 		});
+
+		function ArticleReply__delete(obj) {
+			alert(obj);
+		}
 	</script>
 
+	<div class="template-box template-box-1">
+		<table>
+			<tbody>
+				<tr data-article-reply-id="{$번호}">
+					<td>{$번호}</td>
+					<td>{$날짜}</td>
+					<td>{$내용}</td>
+					<td>
+						<div class="reply-btn">
+							<button type="button" onclick="location.href='#'">수정</button>
+							<button type="button" onclick="if ( confirm('삭제하시겠습니까?') ) {ArticleReply__delete(this);}">삭제</button>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
 	<div class="table-box article-reply-list-box">
 		<table>
 			<colgroup>
 				<col width="100" />
 				<col width="200" />
 				<col width="500" />
-				<col width="130" />
+				<col width="90" />
 			</colgroup>
 			<thead>
 				<tr>
@@ -165,8 +194,7 @@
 				</tr>
 			</thead>
 			<tbody>
-			<%--
-				<c:forEach items="${articleReplies}" var="articleReply">
+				<%-- <c:forEach items="${articleReplies}" var="articleReply">
 					<tr>
 						<td>${articleReply.id}</td>
 						<td>${articleReply.regDate}</td>
@@ -178,8 +206,7 @@
 							</div>
 						</td>
 					</tr>
-				</c:forEach>
-			 --%>	
+				</c:forEach> --%>
 			</tbody>
 		</table>
 	</div>

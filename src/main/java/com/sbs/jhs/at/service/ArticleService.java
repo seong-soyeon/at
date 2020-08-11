@@ -68,6 +68,10 @@ public class ArticleService {
 	public List<ArticleReply> getForPrintArticleReplies(int articleId) {
 		return articleDao.getForPrintArticleReplies(articleId);
 	}
+	
+	public List<ArticleReply> getForPrintArticleReplies(int articleId, int from) {
+		return articleDao.getForPrintArticleRepliesFrom(articleId, from);
+	}
 
 	public ArticleReply getForPrintArticleReply(int id) {
 		ArticleReply articleReply = articleDao.getForPrintArticleReply(id);
