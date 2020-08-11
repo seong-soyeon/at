@@ -68,6 +68,14 @@ table> tbody> tr> td> textarea {
 	padding: 10px;
 	
 }
+.head-a {
+	text-align: center;
+}
+.head-a> a {
+	padding: 30px;
+	color: #dfdfdf;
+	font-size: 1.4rem;
+}
 /* write & modify */
 .form1> .form-row input, .form1> .form-row textarea {
 	display: block;
