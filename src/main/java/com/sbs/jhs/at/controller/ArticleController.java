@@ -138,12 +138,11 @@ public class ArticleController {
 
 		return "common/redirect";
 	}
-	
+	//Rs = Map을 리턴 한다는뜻
 	@RequestMapping("/article/getForPrintArticleRepliesRs")
 	@ResponseBody
-	public Map<String, Object> getForPrintArticleRepliesRs(int id) {
-		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(id);
-		
+	public Map<String, Object> getForPrintArticleRepliesRs(int id, int from) {
+		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(id, from);
 
 		Map<String, Object> rs = new HashMap<>();
 		rs.put("resultCode", "S-1");
@@ -206,5 +205,19 @@ public class ArticleController {
 		model.addAttribute("locationReplace", "detail?id=" + articleId + "");
 
 		return "common/redirect";
+	}
+	
+	@RequestMapping("article/doDeleteReplyAjax")
+	@ResponseBody
+	public Map<String, Object> doDeleteReply(int id, String redirectUrl, HttpServletRequest request) {
+		Map<String, Object> rs = articleService.deleteArticleReply(id);
+		
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		
+		return rs;
 	}
 }

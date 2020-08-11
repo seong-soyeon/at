@@ -38,5 +38,7 @@ public interface ArticleDao {
 	public void deleteArticleReply(@Param("id") int id);
 
 	public ArticleReply getArticleReply(@Param("id") int id);
+
+	public List<ArticleReply> getForPrintArticleRepliesFrom(@Param("articleId") int articleId, @Param("from") int from);
 }
 	

@@ -3,7 +3,19 @@
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
 <c:set var="pageTitle" value="게시물 상세보기" />
 <%@ include file="../part/head.jspf" %>
-
+<style>
+.article-reply-list-box tr .loading-inline  {
+	display: none;
+	font-weight: bold;
+	color: red;
+}
+.article-reply-list-box tr[data-loading="Y"] .loading-none {
+	display: none;
+}
+.article-reply-list-box tr[data-loading="Y"] .loading-inline {
+	display: inline;
+}
+</style>
 <div class="table-box con detail-box">
 	<table>
 		<tbody>
@@ -52,7 +64,7 @@
 </div>
 
 <div class="con">
-	<h2>댓글작성</h2>
+	<h2 class="con">댓글작성</h2>
 	
 	<script>
 		function ArticleReply__submitWriteForm(form) {
@@ -68,12 +80,7 @@
 					body : form.body.value
 				}, 
 				function(data) {
-					if (data.msg) {
-						alert(data.msg);
-					}
-					if ( data.resultCode.substr(0, 2) == 'S-' ) {
-						location.reload(); // 임시 (F5키랑 같음)
-					}
+			
 				}, 'json'
 			);
 			form.body.value = '';
@@ -106,14 +113,22 @@
 	<h2 class="con">댓글 리스트</h2>
 	
 	<script>
+		var ArticleReply__lastLoadedArticleReplyId = 0;
 		function ArticleReply__loadList() {
 			$.get('./getForPrintArticleRepliesRs', {
-				id : param.id
+				id : param.id,
+				from : ArticleReply__lastLoadedArticleReplyId +1
 			}, function(data) {
-				for(var i = 0; i < data.articleReplies.length; i++) {
+				data.articleReplies = data.articleReplies.reverse();
+				
+				for (var i = 0; i < data.articleReplies.length; i++) {
 					var articleReply = data.articleReplies[i];
 					ArticleReply__drawReply(articleReply);
+
+					ArticleReply__lastLoadedArticleReplyId = articleReply.id;
 				}
+
+				setTimeout(ArticleReply__loadList, 1000);
 			}, 'json');
 		}
 
@@ -121,21 +136,25 @@
 		var ArticleReply__$listTbody;
 
 		function ArticleReply__drawReply(articleReply) {
-			var html = '';
+			var html = $('.template-box-1 tbody').html();
 
+			html = replaceAll(html, "{$번호}", articleReply.id);
+			html = replaceAll(html, "{$날짜}", articleReply.regDate);
+			html = replaceAll(html, "{$내용}", articleReply.body);
+				
+			/* 
+			var html = ''; 
 			html = '<tr data-article-reply-id="' + articleReply.id + '">'; 
 			html += '<td>' + articleReply.id + '</td>';
 			html += '<td>' + articleReply.regDate + '</td>';
 			html += '<td>' + articleReply.body + '</td>';
 			html += '<td>';
-			html += '<div>';
-			html += '<a href="#">삭제</a>';
-			html += '<a href="#">수정</a>';
+			html += '<a href="#" class="reply-btn">삭제</a>';
+			html += '<a href="#" class="reply-btn">수정</a>';
 			//html += '<button type="button" onclick="location.href='#'">수정</button>';
 			//html += '<button type="button" onclick="if ( confirm('삭제하시겠습니까?') == false ) return false; location.href='#'">삭제</button>';
-			html += '</div>';
 			html += '</td>';
-			html += '</tr>';
+			html += '</tr>'; */
 
 			ArticleReply__$listTbody.prepend(html);
 		}
@@ -143,18 +162,58 @@
 		//이 기능은 html도 다 읽어온 후 실행
 		$(function() {
 			ArticleReply__$listTbody = $('.article-reply-list-box > table tbody');
-			
-			AticleRaply__loadList();
+
+			ArticleReply__loadList();
 		});
+
+		//이 함수가 있는 버튼과 가장 가까운 tr(=댓글 한개)삭제
+		function ArticleReply__delete(obj) {
+			var $clickedBtn = $(obj);
+			var $tr = $clickedBtn.closest('tr');
+
+			var replyId = parseInt($tr.attr('data-article-reply-id'));
+
+			$tr.attr('data-loading', 'Y');
+			
+			$.post(
+				'./doDeleteReplyAjax,'{
+					id: replyId
+				},
+				function(data){
+					$tr.remove();
+					$tr.attr('data-loading', 'N');
+				},
+				'json'
+			);
+		}
 	</script>
 
+	<div class="template-box template-box-1">
+		<table>
+			<tbody>
+				<tr data-article-reply-id="{$번호}">
+					<td>{$번호}</td>
+					<td>{$날짜}</td>
+					<td>{$내용}</td>
+					<td>
+						<div class="reply-btn">
+							<span class="loading-inline">삭제중입니다...</span>
+							<button class="loading-none" type="button" onclick="location.href='#'">수정</button>
+							<button class="loading-none"  type="button" onclick="if ( confirm('정말 삭제하시겠습니까?') ) {ArticleReply__delete(this); } return false; location.href='#'">삭제</button>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+	
 	<div class="table-box article-reply-list-box">
 		<table>
 			<colgroup>
 				<col width="100" />
 				<col width="200" />
 				<col width="500" />
-				<col width="130" />
+				<col width="90" />
 			</colgroup>
 			<thead>
 				<tr>
@@ -165,8 +224,7 @@
 				</tr>
 			</thead>
 			<tbody>
-			<%--
-				<c:forEach items="${articleReplies}" var="articleReply">
+			<%-- <c:forEach items="${articleReplies}" var="articleReply">
 					<tr>
 						<td>${articleReply.id}</td>
 						<td>${articleReply.regDate}</td>
@@ -178,8 +236,8 @@
 							</div>
 						</td>
 					</tr>
-				</c:forEach>
-			 --%>	
+				</c:forEach> --%>
+			
 			</tbody>
 		</table>
 	</div>

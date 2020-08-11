@@ -81,7 +81,16 @@
 		FROM articleReply
 		WHERE articleId = #{articleId}
 		ORDER BY id DESC
-
+	</select>
+	
+	<select id="getForPrintArticleRepliesFrom" resultMap="articleReply">
+		<![CDATA[
+		SELECT *
+		FROM articleReply
+		WHERE articleId = #{articleId}
+		AND id >= #{from}
+		ORDER BY id DESC
+		]]>
 	</select>
 
 	<update id="modifyArticleReply">
