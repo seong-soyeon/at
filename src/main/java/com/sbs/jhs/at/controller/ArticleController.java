@@ -220,4 +220,18 @@ public class ArticleController {
 		
 		return rs;
 	}
+	
+	@RequestMapping("article/doModifyReplyAjax")
+	@ResponseBody
+	public Map<String, Object> doModifyReplyAjax(@RequestParam Map<String, Object> param, HttpServletRequest request) {
+		Map<String, Object> rs = articleService.modifyReply(param);
+
+		try {
+			Thread.sleep(3000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		return rs;
+	}
 }

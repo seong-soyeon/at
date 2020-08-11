@@ -4,7 +4,7 @@
 <c:set var="pageTitle" value="게시물 상세보기" />
 <%@ include file="../part/head.jspf" %>
 <style>
-.article-reply-list-box tr .loading-inline  {
+.article-reply-list-box tr .loading-delete-inline  {
 	display: none;
 	font-weight: bold;
 	color: red;
@@ -15,6 +15,27 @@
 .article-reply-list-box tr[data-loading="Y"] .loading-inline {
 	display: inline;
 }
+
+
+/* .article-reply-list-box tr[data-loading="Y"][data-loading-delete="Y"] .loading-delete-inline
+	{
+	display: inline;
+}
+.article-reply-list-box tr[data-modify-mode="Y"] .modify-mode-none {
+	display: none;
+}
+.article-reply-list-box tr .modify-mode-inline {
+	display: none;
+}
+.article-reply-list-box tr .modify-mode-block {
+	display: none;
+}
+.article-reply-list-box tr[data-modify-mode="Y"] .modify-mode-block {
+	display: block;
+}
+.article-reply-list-box tr[data-modify-mode="Y"] .modify-mode-inline {
+	display: inline;
+} */
 </style>
 <div class="table-box con detail-box">
 	<table>
@@ -197,7 +218,7 @@
 					<td>{$내용}</td>
 					<td>
 						<div class="reply-btn">
-							<span class="loading-inline">삭제중입니다...</span>
+							<span class="loading-delete-inline">삭제중입니다...</span>
 							<button class="loading-none" type="button" onclick="location.href='#'">수정</button>
 							<button class="loading-none"  type="button" onclick="if ( confirm('정말 삭제하시겠습니까?') ) {ArticleReply__delete(this); } return false; location.href='#'">삭제</button>
 						</div>
