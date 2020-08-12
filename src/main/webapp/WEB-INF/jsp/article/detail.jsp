@@ -12,13 +12,8 @@
 .article-reply-list-box tr[data-loading="Y"] .loading-none {
 	display: none;
 }
-.article-reply-list-box tr[data-loading="Y"] .loading-inline {
-	display: inline;
-}
 
-
-/* .article-reply-list-box tr[data-loading="Y"][data-loading-delete="Y"] .loading-delete-inline
-	{
+.article-reply-list-box tr[data-loading="Y"][data-loading-delete="Y"] .loading-delete-inline {
 	display: inline;
 }
 .article-reply-list-box tr[data-modify-mode="Y"] .modify-mode-none {
@@ -35,8 +30,9 @@
 }
 .article-reply-list-box tr[data-modify-mode="Y"] .modify-mode-inline {
 	display: inline;
-} */
+}
 </style>
+
 <div class="table-box con detail-box">
 	<table>
 		<tbody>
@@ -187,25 +183,83 @@
 			ArticleReply__loadList();
 		});
 
+		function ArticleReply__enableModifyMode(obj) {
+			var $clickedBtn = $(obj);
+			var $tr = $clickedBtn.closest('tr');
+			var $replyBodyText = $tr.find('.reply-body-text');
+			var $textarea = $tr.find('form textarea');
+			$textarea.val($replyBodyText.text().trim());
+			$tr.attr('data-modify-mode', 'Y');
+		}
+
+		function ArticleReply__disableModifyMode(obj) {
+			var $clickedBtn = $(obj);
+			var $tr = $clickedBtn.closest('tr');
+
+			$tr.attr('data-modify-mode', 'N');
+		}
+
+		function ArticleReply__submitModifyReplyForm(form) {
+			var $tr = $(form).closest('tr');
+			form.body.value = form.body.value.trim();
+			if (form.body.value.length == 0) {
+				alert('댓글내용을 입력 해주세요.');
+				form.body.focus();
+				return false;
+			}
+			var replyId = parseInt($tr.attr('data-article-reply-id'));
+			var body = form.body.value;
+			$tr.attr('data-loading', 'Y');
+			$tr.attr('data-loading-modify', 'Y');
+			$.post('./doModifyReplyAjax', {
+				id : replyId,
+				body : body
+			}, function(data) {
+				$tr.attr('data-loading', 'N');
+				$tr.attr('data-loading-modify', 'N');
+				
+				ArticleReply__disableModifyMode(form);
+				
+				if (data.resultCode.substr(0, 2) == 'S-') {
+					var $replyBodyText = $tr.find('.reply-body-text');
+					var $textarea = $tr.find('form textarea');
+					$replyBodyText.text($textarea.val());
+				} else {
+					if (data.msg) {
+						alert(data.msg)
+					}
+				}
+			});
+		}
+
 		//이 함수가 있는 버튼과 가장 가까운 tr(=댓글 한개)삭제
 		function ArticleReply__delete(obj) {
 			var $clickedBtn = $(obj);
 			var $tr = $clickedBtn.closest('tr');
-
 			var replyId = parseInt($tr.attr('data-article-reply-id'));
-
+			
 			$tr.attr('data-loading', 'Y');
+			$tr.attr('data-loading-delete', 'Y');
 			
 			$.post(
-				'./doDeleteReplyAjax,'{
+				'./doDeleteReplyAjax', {
 					id: replyId
 				},
-				function(data){
-					$tr.remove();
+				function(data) {
 					$tr.attr('data-loading', 'N');
+					$tr.attr('data-loading-delete', 'N');
+
+					if (data.resultCode.substr(0,2) == 'S-') {
+						$tr.remove();
+					} else {
+						if(data.msg) {
+							alert(data.msg)
+						}
+					}
 				},
 				'json'
 			);
+			
 		}
 	</script>
 
@@ -215,12 +269,26 @@
 				<tr data-article-reply-id="{$번호}">
 					<td>{$번호}</td>
 					<td>{$날짜}</td>
-					<td>{$내용}</td>
+					<td>
+						<div class="reply-body-text modify-mode-none">{$내용}</div>
+						<div class="modify-mode-block">
+							<form onsubmit="ArticleReply__submitModifyReplyForm(this); return false;">
+								<textarea name="body">{$내용}</textarea>
+								<br />
+								<input class="loading-none" type="submit" value="수정" />
+							</form>
+						</div>
+					</td>
 					<td>
 						<div class="reply-btn">
 							<span class="loading-delete-inline">삭제중입니다...</span>
-							<button class="loading-none" type="button" onclick="location.href='#'">수정</button>
-							<button class="loading-none"  type="button" onclick="if ( confirm('정말 삭제하시겠습니까?') ) {ArticleReply__delete(this); } return false; location.href='#'">삭제</button>
+					
+							<button class="loading-none modify-mode-none"  type="button" 
+								onclick="ArticleReply__enableModifyMode(this); return false; location.href='#'">수정</button>
+							<button class="loading-none modify-mode-inline"  type="button" 
+								onclick="ArticleReply__disableModifyMode(this); return false; location.href='#'">수정취소</button>
+							<button class="loading-none"  type="button" 
+								onclick="if ( confirm('정말 삭제하시겠습니까?') ) {ArticleReply__delete(this); } return false; location.href='#'">삭제</button>
 						</div>
 					</td>
 				</tr>

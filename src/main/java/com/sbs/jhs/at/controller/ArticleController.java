@@ -212,12 +212,6 @@ public class ArticleController {
 	public Map<String, Object> doDeleteReply(int id, String redirectUrl, HttpServletRequest request) {
 		Map<String, Object> rs = articleService.deleteArticleReply(id);
 		
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
-		
 		return rs;
 	}
 	
@@ -226,11 +220,11 @@ public class ArticleController {
 	public Map<String, Object> doModifyReplyAjax(@RequestParam Map<String, Object> param, HttpServletRequest request) {
 		Map<String, Object> rs = articleService.modifyReply(param);
 
-		try {
-			Thread.sleep(3000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+//		try {
+//			Thread.sleep(3000);
+//		} catch (InterruptedException e) {
+//			e.printStackTrace();
+//		}
 
 		return rs;
 	}
