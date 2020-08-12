@@ -69,59 +69,63 @@
 	</select>
 	
 	<insert id="writeReply" parameterType="Map" useGeneratedKeys="true" keyProperty="id">
-		INSERT INTO articleReply
+		INSERT INTO reply
 		SET regDate = NOW(),
 		updateDate = NOW(),
 		body = #{body},
-		articleId = #{articleId}
+		relId = #{relId},
+		relTypeCode = #{relTypeCode}
 	</insert>
 	
-	<select id="getForPrintArticleReplies" resultMap="articleReply">
+	<!-- <select id="getForPrintReplies" resultMap="reply">
 		SELECT *
-		FROM articleReply
-		WHERE articleId = #{articleId}
+		FROM reply
+		WHERE relId = #{relId}
+		AND relTypeCode = #{relTypeCode}
 		ORDER BY id DESC
-	</select>
+	</select> -->
 	
-	<select id="getForPrintArticleRepliesFrom" resultMap="articleReply">
+	<select id="getForPrintRepliesFrom" resultMap="reply">
 		<![CDATA[
 		SELECT *
-		FROM articleReply
-		WHERE articleId = #{articleId}
+		FROM reply
+		WHERE relId = #{relId}
+		AND relTypeCode = #{relTypeCode}
 		AND id >= #{from}
 		ORDER BY id DESC
 		]]>
 	</select>
 
-	<update id="modifyArticleReply">
-		UPDATE articleReply
+	<update id="modifyReply">
+		UPDATE reply
 		set body = #{body}
 		WHERE id = #{id}
 	</update>
 
-	<select id="getForPrintArticleReply" resultMap="articleReply">
+	<select id="getForPrintReply" resultMap="reply">
 		SELECT AR.*
-		FROM articleReply AS AR
+		FROM reply AS AR
 		WHERE AR.id = #{id}
 	</select>
 
-	<delete id="deleteArticleReply">
+	<delete id="deleteReply">
 		DELETE
-		FROM articleReply
+		FROM reply
 		WHERE id = #{id}
 	</delete>
 	
-	<select id="getArticleReply" resultMap="articleReply">
+	<select id="getReply" resultMap="reply">
 		SELECT AR.*
-		FROM articleReply AS AR
+		FROM reply AS AR
 		WHERE AR.id = #{id}
 	</select>
 	
-	<resultMap type="ArticleReply" id="articleReply">
+	<resultMap type="Reply" id="reply">
 		<id property="id" column="id" />
 		<id property="regDate" column="regDate" />
 		<id property="body" column="body" />
-		<id property="articleId" column="articleId" />
+		<id property="relId" column="relId" />
+		<id property="relTypeCode" column="relTypeCode" />
 		<association property="extra" javaType="map">
 			<id property="writer" column="extra__writer" />
 		</association>

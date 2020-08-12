@@ -4,12 +4,14 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.ibatis.annotations.Param;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sbs.jhs.at.dao.ArticleDao;
 import com.sbs.jhs.at.dto.Article;
-import com.sbs.jhs.at.dto.ArticleReply;
+import com.sbs.jhs.at.dto.Reply;
 import com.sbs.jhs.at.util.Util;
 
 @Service
@@ -65,23 +67,24 @@ public class ArticleService {
 		return rs;
 	}
 	
-	public List<ArticleReply> getForPrintArticleReplies(int articleId) {
-		return articleDao.getForPrintArticleReplies(articleId);
-	}
+	/*
+	 * public List<Reply> getForPrintReplies(int id) { return
+	 * articleDao.getForPrintReplies(id); }
+	 */
 	
-	public List<ArticleReply> getForPrintArticleReplies(int articleId, int from) {
-		return articleDao.getForPrintArticleRepliesFrom(articleId, from);
+	public List<Reply> getForPrintReplies(@RequestParam Map<String, Object> param, int from) {
+		return articleDao.getForPrintRepliesFrom(param, from);
 	}
 
-	public ArticleReply getForPrintArticleReply(int id) {
-		ArticleReply articleReply = articleDao.getForPrintArticleReply(id);
+	public Reply getForPrintReply(int id) {
+		Reply reply = articleDao.getForPrintReply(id);
 
-		return articleReply;
+		return reply;
 	}
 
 	public Map<String, Object> modifyReply(Map<String, Object> param) {
 		int id = Util.getAsInt(param.get("id"));
-		articleDao.modifyArticleReply(param);
+		articleDao.modifyReply(param);
 		Map<String, Object> rs = new HashMap<>();
 
 		rs.put("resultCode", "S-1");
@@ -90,8 +93,8 @@ public class ArticleService {
 		return rs;
 	}
 
-	public Map<String, Object> deleteArticleReply(int id) {
-		articleDao.deleteArticleReply(id);
+	public Map<String, Object> deleteReply(int id) {
+		articleDao.deleteReply(id);
 		Map<String, Object> rs = new HashMap<>();
 
 		rs.put("resultCode", "S-1");
@@ -100,7 +103,7 @@ public class ArticleService {
 		return rs;
 	}
 
-	public ArticleReply getArticleReply(int id) {
-		return articleDao.getArticleReply(id);
+	public Reply getReply(int id) {
+		return articleDao.getReply(id);
 	}
 }

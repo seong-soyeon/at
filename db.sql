@@ -33,27 +33,23 @@ title = '제목1',
 `body` = '내용1';
 displayStatus = 1;
 
-INSERT INTO article
-SET regDate = NOW(),
-updateDate = NOW(),
-title = '제목2',
-`body` = '내용2',
-displayStatus = 1;
-
-INSERT INTO article
-SET regDate = NOW(),
-updateDate = NOW(),
-title = '제목3',
-`body` = '내용3',
-displayStatus = 1;
-
+# articleReply 테이블에 테스트 데이터 삽입
 INSERT INTO articleReply
 SET regDate = NOW(),
 updateDate = NOW(),
 articleId = 1,
 `body` = '댓글댓글';
 
+/* 게시물 댓글을 범용 댓글 테이블로 변경(요즘추세) */
+RENAME TABLE `articleReply` TO `reply`; 
+ALTER TABLE `reply` ADD COLUMN `relTypeCode` CHAR(50) NOT NULL AFTER `updateDate`, 
+CHANGE `articleId` `relId` INT(10) UNSIGNED NOT NULL; 
+ALTER TABLE `at`.`reply` ADD INDEX (`relId`, `relTypeCode`);
+UPDATE reply
+SET relTypeCode = 'article'
+WHERE relTypeCode = '';
+
 SELECT *
 FROM article; 
 SELECT *
-FROM articleReply; 
+FROM reply; 

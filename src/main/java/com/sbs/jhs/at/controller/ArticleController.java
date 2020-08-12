@@ -15,8 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.sbs.jhs.at.dto.Article;
-import com.sbs.jhs.at.dto.ArticleReply;
+import com.sbs.jhs.at.dto.Reply;
 import com.sbs.jhs.at.service.ArticleService;
+import com.sbs.jhs.at.util.Util;
 
 @Controller
 public class ArticleController {
@@ -68,9 +69,9 @@ public class ArticleController {
 		model.addAttribute("lastId", lastId);
 		model.addAttribute("article", article);
 		
-		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(article.getId());
+		//List<Reply> replies = articleService.getForPrintReplies(article.getId());
 
-		model.addAttribute("articleReplies", articleReplies);
+		//model.addAttribute("replies", replies);
 		
 		return "article/detail";
 	}
@@ -121,96 +122,136 @@ public class ArticleController {
 		return "common/redirect";
 	}
 	
-	@RequestMapping("/article/doWriteReply")
-	@ResponseBody
-	public String doWriteReply(Model model, @RequestParam Map<String, Object> param) {
-		int id = Integer.parseInt((String)param.get("id"));//이거
-		Map<String, Object> rs = articleService.writeReply(param);
-		
-		String msg = (String) rs.get("msg");
-		String redirectUrl = (String) param.get("redirectUrl");
-
-		ArticleReply articleReply = getArticleReply(id);//이거
-		int articleId = articleReply.getArticleId();//이거
-		
-		model.addAttribute("alertMsg", msg);
-		model.addAttribute("locationReplace", "detail?id=' + articleId + '");//이거 필요없어지면 수정&삭제하기
-
-		return "common/redirect";
-	}
+	/*
+	 * @RequestMapping("/article/doWriteReply")
+	 * 
+	 * @ResponseBody public String doWriteReply(Model model, @RequestParam
+	 * Map<String, Object> param) { int id =
+	 * Integer.parseInt((String)param.get("id"));//이거 Map<String, Object> rs =
+	 * articleService.writeReply(param);
+	 * 
+	 * String msg = (String) rs.get("msg"); String redirectUrl = (String)
+	 * param.get("redirectUrl");
+	 * 
+	 * Reply reply = getReply(id);//이거 int articleId = reply.getArticleId();//이거
+	 * 
+	 * model.addAttribute("alertMsg", msg); model.addAttribute("locationReplace",
+	 * "detail?id=' + articleId + '");//이거 필요없어지면 수정&삭제하기
+	 * 
+	 * return "common/redirect"; }
+	 */
+	
 	//Rs = Map을 리턴 한다는뜻
-	@RequestMapping("/article/getForPrintArticleRepliesRs")
+	@RequestMapping("/article/getForPrintRepliesRs")
 	@ResponseBody
-	public Map<String, Object> getForPrintArticleRepliesRs(int id, int from) {
-		List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(id, from);
+	public Map<String, Object> getForPrintRepliesRs(int id, @RequestParam Map<String, Object> param, int from) {
+		param.put("relTypeCode", "article");
+		Util.changeMapKey(param, "articleId", "relId");
+		
+		List<Reply> replies = articleService.getForPrintReplies(param, from);
+
+		int relId = Integer.parseInt((String)param.get("relId"));
+		System.out.println(from);
+		System.out.println(relId);
+		Map<String, Object> rs = new HashMap<>();
+		
+		rs.put("resultCode", "S-1");
+		rs.put("msg", String.format("총 %d개의 댓글이 있습니다.", replies.size()));
+		
+		rs.put("replies", replies);
+		
+		return rs;
+		
+		/*쌤
+		Map<String, Object> rsDataBody = new HashMap<>();
+
+		param.put("relTypeCode", "article");
+		Util.changeMapKey(param, "articleId", "relId");
+
+		List<Reply> replies = articleService.getForPrintReplies(param);
+		rsDataBody.put("replies", replies);
+
+		return new ResultData("S-1", String.format("%d개의 댓글을 불러왔습니다.", replies.size()), rsDataBody);
+		 */
+		
+		/*나
+		 List<ArticleReply> articleReplies = articleService.getForPrintArticleReplies(id, from);
 
 		Map<String, Object> rs = new HashMap<>();
 		rs.put("resultCode", "S-1");
 		rs.put("msg", String.format("총 %d개의 댓글이 있습니다.", articleReplies.size()));
 		rs.put("articleReplies", articleReplies);
-		
+
 		return rs;
+		 * */
 	}
 	
 	@RequestMapping("/article/doWriteReplyAjax")
 	@ResponseBody
 	public Map<String, Object> doWriteReplyAjax(Model model, @RequestParam Map<String, Object> param, HttpServletRequest  request ) {
-		Map<String, Object> rs = articleService.writeReply(param);
 		
+		param.put("relTypeCode", "article");
+		Util.changeMapKey(param, "articleId", "relId");
+		
+		Map<String, Object> rs = articleService.writeReply(param);
+		int relId = Integer.parseInt((String)param.get("relId"));
+		String relTypeCode = (String)param.get("relTypeCode");
+		System.out.println(relTypeCode);
+		System.out.println(relId);
 		return rs;
 	}
 
 	@RequestMapping("article/modifyReply")
 	public String showModifyReply(Model model, int id, HttpServletRequest request) {
 
-		ArticleReply articleReply = articleService.getForPrintArticleReply(id);
+		Reply reply = articleService.getForPrintReply(id);
 
-		model.addAttribute("articleReply", articleReply);
+		model.addAttribute("reply", reply);
 
 		return "article/modifyReply";
 	}
 
-	@RequestMapping("article/doModifyReply")
-	public String doModifyReply(Model model, @RequestParam Map<String, Object> param, HttpServletRequest request) {
-		int id = Integer.parseInt((String)param.get("id"));
-		Map<String, Object> rs = articleService.modifyReply(param);
+	/*
+	 * @RequestMapping("article/doModifyReply") public String doModifyReply(Model
+	 * model, @RequestParam Map<String, Object> param, HttpServletRequest request) {
+	 * int id = Integer.parseInt((String)param.get("id")); Map<String, Object> rs =
+	 * articleService.modifyReply(param);
+	 * 
+	 * String msg = (String) rs.get("msg"); String redirectUrl = (String)
+	 * param.get("redirectUrl");
+	 * 
+	 * Reply reply = getReply(id); int articleId = reply.getArticleId();
+	 * 
+	 * model.addAttribute("alertMsg", msg); model.addAttribute("locationReplace",
+	 * "detail?id=" + articleId + "");
+	 * 
+	 * return "common/redirect"; }
+	 */
 
-		String msg = (String) rs.get("msg");
-		String redirectUrl = (String) param.get("redirectUrl");
-
-		ArticleReply articleReply = getArticleReply(id);
-		int articleId = articleReply.getArticleId();
-		
-		model.addAttribute("alertMsg", msg);
-		model.addAttribute("locationReplace", "detail?id=" + articleId + "");
-
-		return "common/redirect";
+	private Reply getReply(int id) {
+		return articleService.getReply(id);
 	}
 
-	private ArticleReply getArticleReply(int id) {
-		return articleService.getArticleReply(id);
-	}
-
-	@RequestMapping("article/doDeleteReply")
-	public String doDeleteReply(Model model, int id, String redirectUrl, HttpServletRequest request) {
-		ArticleReply articleReply = getArticleReply(id);
-		int articleId = articleReply.getArticleId();
-		
-		Map<String, Object> rs = articleService.deleteArticleReply(id);
-
-		String msg = (String) rs.get("msg");
-
-		
-		model.addAttribute("alertMsg", msg);
-		model.addAttribute("locationReplace", "detail?id=" + articleId + "");
-
-		return "common/redirect";
-	}
+	/*
+	 * @RequestMapping("article/doDeleteReply") public String doDeleteReply(Model
+	 * model, int id, String redirectUrl, HttpServletRequest request) { Reply reply
+	 * = getReply(id); int articleId = reply.getArticleId();
+	 * 
+	 * Map<String, Object> rs = articleService.deleteReply(id);
+	 * 
+	 * String msg = (String) rs.get("msg");
+	 * 
+	 * 
+	 * model.addAttribute("alertMsg", msg); model.addAttribute("locationReplace",
+	 * "detail?id=" + articleId + "");
+	 * 
+	 * return "common/redirect"; }
+	 */
 	
 	@RequestMapping("article/doDeleteReplyAjax")
 	@ResponseBody
 	public Map<String, Object> doDeleteReply(int id, String redirectUrl, HttpServletRequest request) {
-		Map<String, Object> rs = articleService.deleteArticleReply(id);
+		Map<String, Object> rs = articleService.deleteReply(id);
 		
 		return rs;
 	}

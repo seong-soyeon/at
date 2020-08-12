@@ -5,9 +5,10 @@ import java.util.Map;
 
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import com.sbs.jhs.at.dto.Article;
-import com.sbs.jhs.at.dto.ArticleReply;
+import com.sbs.jhs.at.dto.Reply;
 
 @Mapper // 이렇게 해주면 ArticleDao의 구현체를 마이바티스가 대신 구현해준다.
 public interface ArticleDao {
@@ -29,16 +30,16 @@ public interface ArticleDao {
 
 	public void writeReply(Map<String, Object> param);
 	
-	public List<ArticleReply> getForPrintArticleReplies(@Param("articleId") int articleId);
+	//public List<Reply> getForPrintReplies(@Param("id") int id);
 
-	public ArticleReply getForPrintArticleReply(@Param("id") int id);
+	public Reply getForPrintReply(@Param("id") int id);
 
-	public void modifyArticleReply(Map<String, Object> param);
+	public void modifyReply(Map<String, Object> param);
 
-	public void deleteArticleReply(@Param("id") int id);
+	public void deleteReply(@Param("id") int id);
 
-	public ArticleReply getArticleReply(@Param("id") int id);
+	public Reply getReply(@Param("id") int id);
 
-	public List<ArticleReply> getForPrintArticleRepliesFrom(@Param("articleId") int articleId, @Param("from") int from);
+	public List<Reply> getForPrintRepliesFrom(@RequestParam Map<String, Object> param, @Param("from") int from);
 }
 	

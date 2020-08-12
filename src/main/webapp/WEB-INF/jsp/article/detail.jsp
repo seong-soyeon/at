@@ -84,7 +84,7 @@
 	<h2 class="con">댓글작성</h2>
 	
 	<script>
-		function ArticleReply__submitWriteForm(form) {
+		function Reply__submitWriteForm(form) {
 			form.body.value = form.body.value.trim();
 			if (form.body.value.length == 0) {
 				alert('댓글을 입력해주세요.');
@@ -103,7 +103,7 @@
 			form.body.value = '';
 		}
 	</script>
-	<form class="form1" onsubmit="ArticleReply__submitWriteForm(this); return false;">
+	<form class="form1" onsubmit="Reply__submitWriteForm(this); return false;">
 		<div class="table-box form-row replytable-box">
 			<table>
 				<colgroup>
@@ -130,41 +130,41 @@
 	<h2 class="con">댓글 리스트</h2>
 	
 	<script>
-		var ArticleReply__lastLoadedArticleReplyId = 0;
-		function ArticleReply__loadList() {
-			$.get('./getForPrintArticleRepliesRs', {
-				id : param.id,
-				from : ArticleReply__lastLoadedArticleReplyId +1
+		var Reply__lastLoadedReplyId = 0;
+		function Reply__loadList() {
+			$.get('./getForPrintRepliesRs', {
+				articleId : param.id,
+				from : Reply__lastLoadedReplyId +1
 			}, function(data) {
-				data.articleReplies = data.articleReplies.reverse();
+				data.replies = data.replies.reverse();
 				
-				for (var i = 0; i < data.articleReplies.length; i++) {
-					var articleReply = data.articleReplies[i];
-					ArticleReply__drawReply(articleReply);
+				for (var i = 0; i < data.replies.length; i++) {
+					var reply = data.replies[i];
+					Reply__drawReply(reply);
 
-					ArticleReply__lastLoadedArticleReplyId = articleReply.id;
+					Reply__lastLoadedReplyId = reply.id;
 				}
 
-				setTimeout(ArticleReply__loadList, 1000);
+				setTimeout(Reply__loadList, 1000);
 			}, 'json');
 		}
 
 		//댓글이 들어올 때 마다 prepend로 아래와 같은 html넣음
-		var ArticleReply__$listTbody;
+		var Reply__$listTbody;
 
-		function ArticleReply__drawReply(articleReply) {
+		function Reply__drawReply(reply) {
 			var html = $('.template-box-1 tbody').html();
 
-			html = replaceAll(html, "{$번호}", articleReply.id);
-			html = replaceAll(html, "{$날짜}", articleReply.regDate);
-			html = replaceAll(html, "{$내용}", articleReply.body);
+			html = replaceAll(html, "{$번호}", reply.id);
+			html = replaceAll(html, "{$날짜}", reply.regDate);_
+			html = replaceAll(html, "{$내용}", reply.body);
 				
 			/* 
 			var html = ''; 
-			html = '<tr data-article-reply-id="' + articleReply.id + '">'; 
-			html += '<td>' + articleReply.id + '</td>';
-			html += '<td>' + articleReply.regDate + '</td>';
-			html += '<td>' + articleReply.body + '</td>';
+			html = '<tr data-article-reply-id="' + reply.id + '">'; 
+			html += '<td>' + reply.id + '</td>';
+			html += '<td>' + reply.regDate + '</td>';
+			html += '<td>' + reply.body + '</td>';
 			html += '<td>';
 			html += '<a href="#" class="reply-btn">삭제</a>';
 			html += '<a href="#" class="reply-btn">수정</a>';
@@ -173,17 +173,17 @@
 			html += '</td>';
 			html += '</tr>'; */
 
-			ArticleReply__$listTbody.prepend(html);
+			Reply__$listTbody.prepend(html);
 		}
 	
 		//이 기능은 html도 다 읽어온 후 실행
 		$(function() {
-			ArticleReply__$listTbody = $('.article-reply-list-box > table tbody');
+			Reply__$listTbody = $('.article-reply-list-box > table tbody');
 
-			ArticleReply__loadList();
+			Reply__loadList();
 		});
 
-		function ArticleReply__enableModifyMode(obj) {
+		function Reply__enableModifyMode(obj) {
 			var $clickedBtn = $(obj);
 			var $tr = $clickedBtn.closest('tr');
 			var $replyBodyText = $tr.find('.reply-body-text');
@@ -192,14 +192,14 @@
 			$tr.attr('data-modify-mode', 'Y');
 		}
 
-		function ArticleReply__disableModifyMode(obj) {
+		function Reply__disableModifyMode(obj) {
 			var $clickedBtn = $(obj);
 			var $tr = $clickedBtn.closest('tr');
 
 			$tr.attr('data-modify-mode', 'N');
 		}
 
-		function ArticleReply__submitModifyReplyForm(form) {
+		function Reply__submitModifyReplyForm(form) {
 			var $tr = $(form).closest('tr');
 			form.body.value = form.body.value.trim();
 			if (form.body.value.length == 0) {
@@ -218,7 +218,7 @@
 				$tr.attr('data-loading', 'N');
 				$tr.attr('data-loading-modify', 'N');
 				
-				ArticleReply__disableModifyMode(form);
+				Reply__disableModifyMode(form);
 				
 				if (data.resultCode.substr(0, 2) == 'S-') {
 					var $replyBodyText = $tr.find('.reply-body-text');
@@ -233,7 +233,7 @@
 		}
 
 		//이 함수가 있는 버튼과 가장 가까운 tr(=댓글 한개)삭제
-		function ArticleReply__delete(obj) {
+		function Reply__delete(obj) {
 			var $clickedBtn = $(obj);
 			var $tr = $clickedBtn.closest('tr');
 			var replyId = parseInt($tr.attr('data-article-reply-id'));
@@ -272,7 +272,7 @@
 					<td>
 						<div class="reply-body-text modify-mode-none">{$내용}</div>
 						<div class="modify-mode-block">
-							<form onsubmit="ArticleReply__submitModifyReplyForm(this); return false;">
+							<form onsubmit="Reply__submitModifyReplyForm(this); return false;">
 								<textarea name="body">{$내용}</textarea>
 								<br />
 								<input class="loading-none" type="submit" value="수정" />
@@ -284,11 +284,11 @@
 							<span class="loading-delete-inline">삭제중입니다...</span>
 					
 							<button class="loading-none modify-mode-none"  type="button" 
-								onclick="ArticleReply__enableModifyMode(this); return false; location.href='#'">수정</button>
+								onclick="Reply__enableModifyMode(this); return false; location.href='#'">수정</button>
 							<button class="loading-none modify-mode-inline"  type="button" 
-								onclick="ArticleReply__disableModifyMode(this); return false; location.href='#'">수정취소</button>
+								onclick="Reply__disableModifyMode(this); return false; location.href='#'">수정취소</button>
 							<button class="loading-none"  type="button" 
-								onclick="if ( confirm('정말 삭제하시겠습니까?') ) {ArticleReply__delete(this); } return false; location.href='#'">삭제</button>
+								onclick="if ( confirm('정말 삭제하시겠습니까?') ) {Reply__delete(this); } return false; location.href='#'">삭제</button>
 						</div>
 					</td>
 				</tr>
@@ -313,11 +313,11 @@
 				</tr>
 			</thead>
 			<tbody>
-			<%-- <c:forEach items="${articleReplies}" var="articleReply">
+			<%-- <c:forEach items="${replies}" var="reply">
 					<tr>
-						<td>${articleReply.id}</td>
-						<td>${articleReply.regDate}</td>
-						<td>${articleReply.body}</td>
+						<td>${reply.id}</td>
+						<td>${reply.regDate}</td>
+						<td>${reply.body}</td>
 						<td>
 							<div class="btnbtn">
 								<button type="button" onclick="location.href='#'">수정</button>

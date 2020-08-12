@@ -9,10 +9,11 @@ import lombok.NoArgsConstructor;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class ArticleReply {
+public class Reply {
 	private int id;
 	private String regDate;
 	private String body;
-	private int articleId;
+	private int relId;
+	private String relTypeCode;
 	private Map<String, Object> extra;
 }
