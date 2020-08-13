@@ -28,7 +28,9 @@ public class ArticleService {
 	}
 
 	public int write(Map<String, Object> param) {
-		return articleDao.write(param);
+		articleDao.write(param);
+		
+		return  Util.getAsInt(param.get("id"));
 	}
 
 	public int modify(Map<String, Object> param) {

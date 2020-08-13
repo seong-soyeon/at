@@ -13,4 +13,4 @@ spring:
 mybatis:
   type-aliases-package: com.sbs.jhs.at.dto
 custom:
-  logoText: CUNI # 사이트 명 치환
+  logoText: 오디션 # 사이트 명 치환

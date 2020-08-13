@@ -19,10 +19,14 @@ CREATE TABLE article (
 DROP TABLE IF EXISTS articleReply;
 CREATE TABLE articleReply (
     id INT(10) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT,
-    regDate DATETIME NOT NULL,
-    updateDate DATETIME NOT NULL,
+    regDate DATETIME,
+    updateDate DATETIME,
+    memberId INT(10) UNSIGNED NOT NULL,
     articleId INT(10) UNSIGNED NOT NULL,
-    `body` TEXT NOT NULL
+    delDate DATETIME,
+    delStatus TINYINT(1) UNSIGNED NOT NULL,
+    displayStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+    `body` LONGTEXT NOT NULL
 );
 
 # article 테이블에 테스트 데이터 삽입
@@ -32,11 +36,14 @@ updateDate = NOW(),
 title = '제목1',
 `body` = '내용1';
 displayStatus = 1;
+
 # articleReply 테이블에 테스트 데이터 삽입
 INSERT INTO articleReply
 SET regDate = NOW(),
 updateDate = NOW(),
+memberId = 1,
 articleId = 1,
+displayStatus = 1,
 `body` = '댓글댓글';
 
 /* 게시물 댓글을 범용 댓글 테이블로 변경(요즘추세) */
@@ -55,7 +62,7 @@ CREATE TABLE `member` (
     regDate DATETIME,
     updateDate DATETIME,
     delDate DATETIME,
-	delStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
+    delStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
 	authStatus TINYINT(1) UNSIGNED NOT NULL DEFAULT 0,
     loginId CHAR(20) NOT NULL UNIQUE,
     loginPw CHAR(100) NOT NULL,

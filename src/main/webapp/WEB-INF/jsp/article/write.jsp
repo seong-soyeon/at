@@ -5,6 +5,7 @@
 <%@ include file="../part/head.jspf" %>
 	
 	<form action="doWrite" method="POST" class="con form1" onsubmit="ArticleWriteForm__submit(this); return false;">
+		<input type="hidden" name="rediectUrl" value="/article/detail?id=#id" />
 		<div class="form-row">
 			<span> 제목 </span>
 			<div>

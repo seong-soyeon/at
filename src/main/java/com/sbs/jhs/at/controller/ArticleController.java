@@ -24,7 +24,7 @@ public class ArticleController {
 	@Autowired	//알아서 객체생성//service.java에서 @component나@service 붙어있는것에서 힌트받아 사용
 	private ArticleService articleService;
 	
-	@RequestMapping("/article/list")
+	@RequestMapping("/usr/article/list")
 	public String showList(Model model, @RequestParam Map<String, Object> param) {
 		int page = 1;
 		if (param.get("page") != null) {
@@ -55,7 +55,7 @@ public class ArticleController {
 		return "article/list";
 	}
 
-	@RequestMapping("/article/detail")
+	@RequestMapping("/usr/article/detail")
 	public String showDetail(Model model, @RequestParam Map<String, Object> param) {
 		int id = Integer.parseInt((String)param.get("id"));
 		Article article = articleService.getForPrintArticleById(id);
@@ -67,6 +67,7 @@ public class ArticleController {
 		model.addAttribute("prevId", prevId);
 		model.addAttribute("nextId", nextId);
 		model.addAttribute("lastId", lastId);
+		
 		model.addAttribute("article", article);
 		
 		//List<Reply> replies = articleService.getForPrintReplies(article.getId());
@@ -76,20 +77,24 @@ public class ArticleController {
 		return "article/detail";
 	}
 
-	@RequestMapping("/article/write")
-	public String showWrite(Model model) {
+	@RequestMapping("/usr/article/write")
+	public String showWrite() {
 		return "article/write";
 	}
 
-	@RequestMapping("/article/doWrite")
+	@RequestMapping("/usr/article/doWrite")
 	@ResponseBody
 	public String doWrite(@RequestParam Map<String, Object> param) {
-		int newId = articleService.write(param);
+		int newArticleId = articleService.write(param);
 		
-		return "html:<script> alert('" + newId + "번 게시물이 생성되었습니다.'); location.replace('list'); </script>";
+		String redirectUrl = (String) param.get("redirectUrl");
+		redirectUrl = redirectUrl.replace("#id", newArticleId + "");
+		
+		//return "redirect:" + redirectUrl;//이걸로도 되는지 확인
+		return "html:<script> alert('" + newArticleId + "번 게시물이 생성되었습니다.'); location.replace('list'); </script>";
 	}
 
-	@RequestMapping("/article/modify")
+	@RequestMapping("/usr/article/modify")
 	public String showModify(Model model, int id) {
 		Article article = articleService.getForPrintArticleById(id);
 
@@ -98,7 +103,7 @@ public class ArticleController {
 		return "article/modify";
 	}
 	
-	@RequestMapping("/article/doModify")
+	@RequestMapping("/usr/article/doModify")
 	@ResponseBody
 	public String doModify(@RequestParam Map<String, Object> param) {
 		int id = Integer.parseInt((String)param.get("id"));
@@ -107,7 +112,7 @@ public class ArticleController {
 		return "html:<script> alert('" + id + "번 게시물이 수정되었습니다.'); location.replace('list'); </script>";
 	}
 	
-	@RequestMapping("/article/doDelete")
+	@RequestMapping("/usr/article/doDelete")
 	@ResponseBody
 	public String doDelete(Model model, int id) {
 		Map<String, Object> rs = articleService.deleteArticle(id);
@@ -123,7 +128,7 @@ public class ArticleController {
 	}
 	
 	/*
-	 * @RequestMapping("/article/doWriteReply")
+	 * @RequestMapping("/usr/article/doWriteReply")
 	 * 
 	 * @ResponseBody public String doWriteReply(Model model, @RequestParam
 	 * Map<String, Object> param) { int id =
@@ -142,7 +147,7 @@ public class ArticleController {
 	 */
 	
 	//Rs = Map을 리턴 한다는뜻
-	@RequestMapping("/article/getForPrintRepliesRs")
+	@RequestMapping("/usr/article/getForPrintRepliesRs")
 	@ResponseBody
 	public Map<String, Object> getForPrintRepliesRs(int id, @RequestParam Map<String, Object> param, int from) {
 		param.put("relTypeCode", "article");
@@ -186,9 +191,9 @@ public class ArticleController {
 		 * */
 	}
 	
-	@RequestMapping("/article/doWriteReplyAjax")
+	@RequestMapping("/usr/article/doWriteReplyAjax")
 	@ResponseBody
-	public Map<String, Object> doWriteReplyAjax(Model model, @RequestParam Map<String, Object> param, HttpServletRequest  request ) {
+	public Map<String, Object> doWriteReplyAjax(@RequestParam Map<String, Object> param, HttpServletRequest  request ) {
 		
 		param.put("relTypeCode", "article");
 		Util.changeMapKey(param, "articleId", "relId");
